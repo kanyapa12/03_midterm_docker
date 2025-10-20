@@ -7,7 +7,7 @@ require('dotenv').config();
 // create a MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || 'ahcr_mysql',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'ahcr'
@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Define your API endpoints
 app.get('/ahcr', (req, res) => {
-  pool.query('SELECT * FROM ahcr', (error, results) => {
+  pool.query('SELECT * FROM menu', (error, results) => {
     if (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
