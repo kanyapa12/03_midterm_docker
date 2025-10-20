@@ -19,15 +19,35 @@ app.use(cors()); // Enable CORS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Define your API endpoints
+// Define your API endpoint for all 3 tables
 app.get('/ahcr', (req, res) => {
-  pool.query('SELECT * FROM menu', (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-    } else {
-      res.json(results);
+  const results = {};
+  
+  pool.query('SELECT * FROM menu', (err1, menuResults) => {
+    if (err1) {
+      console.error(err1);
+      return res.status(500).send('Error fetching menu');
     }
+    results.menu = menuResults;
+
+    pool.query('SELECT * FROM orders', (err2, ordersResults) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send('Error fetching orders');
+      }
+      results.orders = ordersResults;
+
+      pool.query('SELECT * FROM users', (err3, usersResults) => {
+        if (err3) {
+          console.error(err3);
+          return res.status(500).send('Error fetching users');
+        }
+        results.users = usersResults;
+
+        // Return JSON with all 3 tables
+        res.json(results);
+      });
+    });
   });
 });
 
